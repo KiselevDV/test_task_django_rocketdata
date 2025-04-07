@@ -1,0 +1,15 @@
+.idea
+.vscode
+.venv
+#.env
+.virtualenv
+
+.pytest_cache
+__pycache__
+*__pycache__*
+#*cache*
+
+db.sqlite3
+db.sqlite3-journal
+db/
+pg_data_rishat
