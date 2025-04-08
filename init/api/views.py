@@ -15,16 +15,19 @@ from init.api.serializers import (
 class AddressViewSet(viewsets.ModelViewSet):
     queryset = Address.objects.all()
     serializer_class = AddressSerializer
+    permission_classes = [IsActiveEmployee]
 
 
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+    permission_classes = [IsActiveEmployee]
 
 
 class SupplyChainNodeViewSet(viewsets.ModelViewSet):
     queryset = SupplyChainNode.objects.select_related('address', 'supplier').prefetch_related('products')
     serializer_class = SupplyChainNodeSerializer
+    permission_classes = [IsActiveEmployee]
     filter_backends = [SearchFilter]
     search_fields = ['address__country']
 
