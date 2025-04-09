@@ -12,8 +12,6 @@ services:
       "
     volumes:
       - ..:/app
-    networks:
-      - test_rocketdata
     env_file:
       - ../.env
     ports:
@@ -21,26 +19,30 @@ services:
     depends_on:
       - postgres
       - redis
+    restart: always
+    networks:
+      - test_rocketdata
 
   postgres:
     image: postgres:17-alpine
     container_name: postgres_rocketdata
-    restart: always
     env_file:
       - ../.env
     ports:
       - "15432:5432"
     volumes:
+#      - pg_data_rocketdata:/var/lib/postgresql/data
       - ../../DB/postgres/pg_data_rocketdata:/var/lib/postgresql/data
+    restart: always
     networks:
       - test_rocketdata
 
   redis:
     image: redis:7-alpine
     container_name: redis_rocketdata
-    restart: always
     ports:
       - "16379:6379"
+    restart: always
     networks:
       - test_rocketdata
 
@@ -52,13 +54,14 @@ services:
     command: celery -A config worker --loglevel=info
     volumes:
       - ..:/app
-    networks:
-      - test_rocketdata
+    env_file:
+      - ../.env
     depends_on:
       - backend
       - redis
-    env_file:
-      - ../.env
+    restart: always
+    networks:
+      - test_rocketdata
 
   celery-beat:
     build:
@@ -68,13 +71,14 @@ services:
     command: celery -A config beat --loglevel=info --scheduler django_celery_beat.schedulers:DatabaseScheduler
     volumes:
       - ..:/app
-    networks:
-      - test_rocketdata
+    env_file:
+      - ../.env
     depends_on:
       - backend
       - redis
-    env_file:
-      - ../.env
+    restart: always
+    networks:
+      - test_rocketdata
 
 volumes:
   pg_data_rocketdata:
