@@ -1,6 +1,7 @@
 from django.contrib import admin
 
-from init.models import SupplyChainNode, Product, Address, Employee
+from init.models import SupplyChainNode, Product, Address, Employee, APIKey
+from init.tasks import clear_debt_task
 
 
 class EmployeeInline(admin.TabularInline):
@@ -20,7 +21,13 @@ class SupplyChainNodeAdmin(admin.ModelAdmin):
 
     @admin.action(description='Очистить задолженность перед поставщиком')
     def clear_debt(modeladmin, request, queryset):
-        queryset.update(debt=0)
+        if queryset.count() > 20:
+            ids = list(queryset.values_list('id', flat=True))
+            clear_debt_task.delay(ids)
+            modeladmin.message_user(request, f'Очистка {len(ids)} звеньев запущена через Celery.')
+        else:
+            count = queryset.update(debt=0)
+            modeladmin.message_user(request, f'Очищено задолженности у {count} звеньев.')
 
 
 @admin.register(Product)
@@ -42,3 +49,5 @@ class EmployeeAdmin(admin.ModelAdmin):
     list_display = ('last_name', 'first_name', 'email', 'phone', 'node')
     search_fields = ('last_name', 'first_name', 'email')
     list_filter = ('node',)
+
+admin.site.register(APIKey)

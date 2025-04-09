@@ -1,10 +1,12 @@
+import secrets
+
 from django.core.exceptions import ValidationError
 from django.db import models
 
 
 class SupplyChainNode(models.Model):
     """Звено сети по продаже электроники"""
-    name = models.CharField(max_length=255, verbose_name='Название')
+    name = models.CharField(max_length=50, verbose_name='Название')
     email = models.EmailField(verbose_name='Электронная почта')
     address = models.ForeignKey('Address', on_delete=models.CASCADE, verbose_name='Адрес')
     products = models.ManyToManyField(
@@ -13,7 +15,7 @@ class SupplyChainNode(models.Model):
         'self', null=True, blank=True, on_delete=models.SET_NULL,
         related_name='clients', verbose_name='Поставщик')
     debt = models.DecimalField(
-        max_digits=10, decimal_places=2, default=0.00, verbose_name='Задолженность')
+        max_digits=12, decimal_places=2, default=0.00, verbose_name='Задолженность')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Время создания')
 
     class Meta:
@@ -50,7 +52,7 @@ class SupplyChainNode(models.Model):
 
 
 class Product(models.Model):
-    name = models.CharField(max_length=255, verbose_name='Название')
+    name = models.CharField(max_length=25, verbose_name='Название')
     model = models.CharField(max_length=255, verbose_name='Модель')
     release_date = models.DateField(verbose_name='Дата выхода на рынок')
 
@@ -63,10 +65,10 @@ class Product(models.Model):
 
 
 class Address(models.Model):
-    country = models.CharField(max_length=100, verbose_name='Страна')
-    city = models.CharField(max_length=100, verbose_name='Город')
-    street = models.CharField(max_length=100, verbose_name='Улица')
-    house_number = models.CharField(max_length=20, verbose_name='Номер дома')
+    country = models.CharField(max_length=255, verbose_name='Страна')
+    city = models.CharField(max_length=255, verbose_name='Город')
+    street = models.CharField(max_length=255, verbose_name='Улица')
+    house_number = models.CharField(max_length=30, verbose_name='Номер дома')
 
     class Meta:
         verbose_name = 'Адрес'
@@ -77,10 +79,10 @@ class Address(models.Model):
 
 
 class Employee(models.Model):
-    first_name = models.CharField(max_length=100, verbose_name='Имя')
-    last_name = models.CharField(max_length=100, verbose_name='Фамилия')
+    first_name = models.CharField(max_length=255, verbose_name='Имя')
+    last_name = models.CharField(max_length=255, verbose_name='Фамилия')
     email = models.EmailField(verbose_name='Электронная почта')
-    phone = models.CharField(max_length=20, blank=True, verbose_name='Телефон')
+    phone = models.CharField(max_length=30, blank=True, verbose_name='Телефон')
     node = models.ForeignKey(
         SupplyChainNode, on_delete=models.CASCADE, related_name='employees', verbose_name='Звено сети')
     is_active = models.BooleanField(default=True, verbose_name='Активен')
@@ -92,3 +94,17 @@ class Employee(models.Model):
 
     def __str__(self):
         return f'{self.last_name} {self.first_name} ({self.node.name})'
+
+
+class APIKey(models.Model):
+    key = models.CharField(max_length=40, unique=True, editable=False)
+    node = models.OneToOneField(SupplyChainNode, on_delete=models.CASCADE, related_name='api_key')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        if not self.key:
+            self.key = secrets.token_hex(20)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f'{self.node.name} API Key'

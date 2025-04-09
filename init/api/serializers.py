@@ -1,5 +1,6 @@
-from rest_framework import serializers
+from datetime import timezone
 
+from rest_framework import serializers
 from init.models import Address, Product, SupplyChainNode, Employee
 
 
@@ -13,6 +14,16 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = '__all__'
+
+    def validate_name(self, value):
+        if len(value) > 25:
+            raise serializers.ValidationError('Название не должно превышать 25 символов')
+        return value
+
+    def validate_release_date(self, value):
+        if value > timezone.now().date():
+            raise serializers.ValidationError('Дата релиза не может быть ранее сегодняшнего дня')
+        return value
 
 
 class EmployeeSerializer(serializers.ModelSerializer):
@@ -37,3 +48,8 @@ class SupplyChainNodeSerializer(serializers.ModelSerializer):
         model = SupplyChainNode
         fields = '__all__'
         read_only_fields = ['debt']
+
+    def validate_name(self, value):
+        if len(value) > 50:
+            raise serializers.ValidationError('Название не должно превышать 50 символов')
+        return value
