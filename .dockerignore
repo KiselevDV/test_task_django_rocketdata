@@ -3,19 +3,16 @@
 .vscode/
 
 # Virtualenvs
-.venv/
 env/
+.venv/
 venv/
-.virtualenv
 .Python
 
 # Python cache
 __pycache__/
-*__pycache__*/
-*.py[cod]
+*.pyc
 *.pyo
 *.pyd
-.pytest_cache/
 
 # Django artifacts
 *.log
@@ -31,11 +28,13 @@ media/
 db.sqlite3
 db.sqlite3-journal
 
-# PostgreSQL volume
-pg_data_rocketdata/
-
 # Test
 .mypy_cache/
+.pytest_cache/
 
-# Env file
-.env
+# Git
+.git
+.gitignore
+
+# Local environment files
+# .env

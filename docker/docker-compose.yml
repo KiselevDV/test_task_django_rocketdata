@@ -1,0 +1,84 @@
+services:
+  backend:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: backend_rocketdata
+    command: >
+      sh -c "
+      python manage.py migrate &&
+      python manage.py collectstatic --noinput &&
+      gunicorn config.wsgi:application --bind 0.0.0.0:8000
+      "
+    volumes:
+      - ..:/app
+    networks:
+      - test_rocketdata
+    env_file:
+      - ../.env
+    ports:
+      - "18000:8000"
+    depends_on:
+      - postgres
+      - redis
+
+  postgres:
+    image: postgres:17-alpine
+    container_name: postgres_rocketdata
+    restart: always
+    env_file:
+      - ../.env
+    ports:
+      - "15432:5432"
+    volumes:
+      - ../../DB/postgres/pg_data_rocketdata:/var/lib/postgresql/data
+    networks:
+      - test_rocketdata
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis_rocketdata
+    restart: always
+    ports:
+      - "16379:6379"
+    networks:
+      - test_rocketdata
+
+  celery:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: celery_rocketdata
+    command: celery -A config worker --loglevel=info
+    volumes:
+      - ..:/app
+    networks:
+      - test_rocketdata
+    depends_on:
+      - backend
+      - redis
+    env_file:
+      - ../.env
+
+  celery-beat:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: celery_beat_rocketdata
+    command: celery -A config beat --loglevel=info --scheduler django_celery_beat.schedulers:DatabaseScheduler
+    volumes:
+      - ..:/app
+    networks:
+      - test_rocketdata
+    depends_on:
+      - backend
+      - redis
+    env_file:
+      - ../.env
+
+volumes:
+  pg_data_rocketdata:
+
+networks:
+  test_rocketdata:
+    driver: bridge
