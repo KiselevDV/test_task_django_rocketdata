@@ -43,7 +43,7 @@ class SupplyChainNode(models.Model):
         return level
 
     def get_level_display(self):
-        return {self.level}
+        return int(self.level)
     get_level_display.short_description = 'Уровень'
 
     def clean(self):

@@ -12,7 +12,8 @@ class APIKeyAuthentication(BaseAuthentication):
 
         raw_key = key.split(' ')[1]
         try:
-            api_key = APIKey.objects.select_related('employee').get(key=raw_key)
+            # api_key = APIKey.objects.select_related('employee').get(key=raw_key)
+            api_key = APIKey.objects.get(key=raw_key)
         except APIKey.DoesNotExist:
             raise AuthenticationFailed('Invalid API key.')
 
