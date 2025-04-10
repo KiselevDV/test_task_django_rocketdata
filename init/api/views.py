@@ -21,8 +21,10 @@ class SupplyChainNodeViewSet(viewsets.ModelViewSet):
     search_fields = ['address__country']
 
     def get_queryset(self):
-        employee = self.request.user
-        return SupplyChainNode.objects.filter(id=employee.node_id)
+        user = self.request.user
+        if hasattr(user, 'is_superuser') and user.is_superuser:
+            return SupplyChainNode.objects.all()
+        return SupplyChainNode.objects.filter(id=user.node_id)
 
     @action(detail=False, methods=['get'])
     def by_country(self, request):

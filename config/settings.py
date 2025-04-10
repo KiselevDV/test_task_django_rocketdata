@@ -102,6 +102,8 @@ REST_FRAMEWORK = {
         'init.api.permissions.IsActiveEmployee',
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
         'init.api.authentication.APIKeyAuthentication',
     ],
 }

@@ -1,7 +1,7 @@
 from rest_framework.authentication import BaseAuthentication
 from rest_framework.exceptions import AuthenticationFailed
 
-from init.models import APIKey
+from init.models import APIKey, Employee
 
 
 class APIKeyAuthentication(BaseAuthentication):
@@ -12,12 +12,12 @@ class APIKeyAuthentication(BaseAuthentication):
 
         raw_key = key.split(' ')[1]
         try:
-            # api_key = APIKey.objects.select_related('employee').get(key=raw_key)
             api_key = APIKey.objects.get(key=raw_key)
         except APIKey.DoesNotExist:
             raise AuthenticationFailed('Invalid API key.')
 
-        if not api_key.employee.is_active:
-            raise AuthenticationFailed('Employee is not active.')
+        employee = Employee.objects.filter(node=api_key.node, is_active=True).first()
+        if not employee:
+            raise AuthenticationFailed('No active employee found for this node.')
 
-        return (api_key.employee, None)
+        return (employee, None)

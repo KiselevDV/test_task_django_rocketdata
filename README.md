@@ -13,8 +13,8 @@
 
 ## Технологии
 
-- Python 3.10+
-- Django 4.x
+- Python 3.12
+- Django 3.2
 - Django REST Framework
 - PostgreSQL
 - Celery + Redis

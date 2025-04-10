@@ -46,3 +46,6 @@
 {
   "email": "user@example.com"
 }
+```
+
+[← Назад к README](../README.md)
