@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Список звеньев</title>
+</head>
+<body>
+    <h1>Список звеньев сети</h1>
+    <ul>
+        {% for node in nodes %}
+            <li>
+                <strong>{{ node.name }}</strong> —
+                <span id="email-{{ node.id }}">{{ node.email }}</span>
+                <button onclick="copyEmail({{ node.id }})">Копировать email</button>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <script>
+        function copyEmail(id) {
+            const email = document.getElementById(`email-${id}`).innerText;
+            navigator.clipboard.writeText(email).then(() => {
+                alert("Email скопирован: " + email);
+            }).catch(err => {
+                console.error("Ошибка копирования: ", err);
+            });
+        }
+    </script>
+</body>
+</html>

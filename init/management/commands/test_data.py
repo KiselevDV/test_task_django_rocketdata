@@ -91,7 +91,7 @@ class Command(BaseCommand):
                       'Gorbunov', 'Popov', 'Mikhaylov', 'Grigoryev', 'Chernov', 'Baranov'
                       ]
 
-        for i in range(50):
+        for i in range(100):
             first_name = random.choice(first_names)
             last_name = random.choice(last_names)
             email = f'{first_name.lower()}.{last_name.lower()}@gmail.com'

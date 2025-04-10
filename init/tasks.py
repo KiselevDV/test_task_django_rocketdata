@@ -3,7 +3,6 @@ import random
 import tempfile
 import qrcode
 
-
 from celery import shared_task
 from decimal import Decimal
 from django.db.models import F

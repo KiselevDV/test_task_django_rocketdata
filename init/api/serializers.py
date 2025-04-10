@@ -1,4 +1,4 @@
-from datetime import timezone
+from django.utils import timezone
 
 from rest_framework import serializers
 from init.models import Address, Product, SupplyChainNode, Employee
@@ -53,3 +53,8 @@ class SupplyChainNodeSerializer(serializers.ModelSerializer):
         if len(value) > 50:
             raise serializers.ValidationError('Название не должно превышать 50 символов')
         return value
+
+
+class QRCodeRequestSerializer(serializers.Serializer):
+    node_id = serializers.IntegerField()
+    email = serializers.EmailField()

@@ -11,23 +11,30 @@ class EmployeeInline(admin.TabularInline):
 
 @admin.register(SupplyChainNode)
 class SupplyChainNodeAdmin(admin.ModelAdmin):
-    list_display = ('name', 'email', 'supplier', 'debt', 'level', 'created_at')
+    list_display = ('name', 'email', 'supplier_link', 'debt', 'get_level_display', 'created_at')
     list_filter = ('supplier', 'address__city')
     search_fields = ('name', 'email')
     inlines = [EmployeeInline]
     filter_horizontal = ('products',)
-    readonly_fields = ('level',)
+    readonly_fields = ('get_level_display',)
     actions = ['clear_debt']
+
+    @admin.display(description='Поставщик')
+    def supplier_link(self, obj):
+        if obj.supplier:
+            return f'{obj.supplier.name} (уровень {obj.supplier.level})'
+        return '—'
 
     @admin.action(description='Очистить задолженность перед поставщиком')
     def clear_debt(modeladmin, request, queryset):
-        if queryset.count() > 20:
+        count = queryset.count()
+        if count > 20:
             ids = list(queryset.values_list('id', flat=True))
             clear_debt_task.delay(ids)
-            modeladmin.message_user(request, f'Очистка {len(ids)} звеньев запущена через Celery.')
+            modeladmin.message_user(request, f'Очистка {count} звеньев запущена через Celery.')
         else:
-            count = queryset.update(debt=0)
-            modeladmin.message_user(request, f'Очищено задолженности у {count} звеньев.')
+            updated = queryset.update(debt=0)
+            modeladmin.message_user(request, f'Очищено задолженности у {updated} звеньев.')
 
 
 @admin.register(Product)
@@ -46,8 +53,11 @@ class AddressAdmin(admin.ModelAdmin):
 
 @admin.register(Employee)
 class EmployeeAdmin(admin.ModelAdmin):
-    list_display = ('last_name', 'first_name', 'email', 'phone', 'node')
+    list_display = ('last_name', 'first_name', 'email', 'phone', 'is_active', 'node')
     search_fields = ('last_name', 'first_name', 'email')
-    list_filter = ('node',)
+    list_filter = ('node', 'is_active')
 
-admin.site.register(APIKey)
+
+@admin.register(APIKey)
+class APIKeyAdmin(admin.ModelAdmin):
+    list_display = ('key', 'created_at', 'node')

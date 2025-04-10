@@ -99,8 +99,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
-    ]
+        'init.api.permissions.IsActiveEmployee',
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'init.api.authentication.APIKeyAuthentication',
+    ],
 }
 
 CELERY_BROKER_URL = f"redis://{os.getenv('REDIS_HOST', 'localhost')}:{os.getenv('REDIS_PORT', 6379)}/0"
