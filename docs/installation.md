@@ -11,7 +11,9 @@ cd test-task-django-rocketdata
 
 ```bash
 cd docker
-docker compose up --build
+```
+```bash
+docker-compose up -d
 ```
 
 ## 3. Миграции, создание суперпользователя и заполнение БД данными
@@ -19,7 +21,11 @@ docker compose up --build
 ```bash
 docker-compose exec backend python manage.py makemigrations
 docker-compose exec backend python manage.py migrate
+```
+```bash
 docker-compose exec backend python manage.py createsuperuser
+```
+```bash
 docker-compose exec backend python manage.py test_data
 ```
 

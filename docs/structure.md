@@ -1,19 +1,23 @@
 ## Структура проекта
+```
 .
-├── config
+├── config/                 # Конфигурация Django и Celery
 │   ├── asgi.py
 │   ├── celery.py
 │   ├── __init__.py
 │   ├── settings.py
 │   ├── urls.py
 │   └── wsgi.py
-├── docker
+├── docker/                 # Docker-конфигурация
 │   ├── docker-compose.yml
 │   └── Dockerfile
-├── docs
-├── init
+├── docs/                   # Документация проекта
+│   ├── api_endpoints.md
+│   ├── installation.md
+│   └── structure.md
+├── init/                   # Основное Django-приложение
 │   ├── admin.py
-│   ├── api
+│   ├── api/                # DRF: сериализаторы, представления, permissions
 │   │   ├── authentication.py
 │   │   ├── permissions.py
 │   │   ├── serializers.py
@@ -21,15 +25,16 @@
 │   │   └── views.py
 │   ├── apps.py
 │   ├── __init__.py
-│   ├── management
-│   │   └── commands
-│   ├── migrations
+│   ├── management/         # Команды manage.py
+│   │   └── commands/
+│   │       └── test_data.py
+│   ├── migrations/
 │   │   ├── 0001_initial.py
 │   │   └── __init__.py
 │   ├── models.py
-│   ├── tasks.py
-│   ├── templates
-│   │   └── init
+│   ├── tasks.py            # Celery задачи
+│   ├── templates/
+│   │   └── init/
 │   │       └── nodes_list.html
 │   ├── tests.py
 │   ├── urls.py
@@ -38,18 +43,10 @@
 ├── poetry.lock
 ├── pyproject.toml
 ├── README.md
-└── staticfiles
-    ├── admin
-    │   ├── css
-    │   ├── fonts
-    │   ├── img
-    │   └── js
-    ├── rest_framework
-    │   ├── css
-    │   ├── docs
-    │   ├── fonts
-    │   ├── img
-    │   └── js
+└── staticfiles/            # Собранная статика
+    ├── admin/
+    ├── rest_framework/
     └── staticfiles.json
+```
 
 [← Назад к README](../README.md)

@@ -1,6 +1,8 @@
 # API эндпоинты
 
-Базовый префикс: `/init/api/`
+**Базовый префикс:** `/init/api/`
+
+---
 
 ### Адреса
 
@@ -28,7 +30,7 @@
 
 ### Сотрудники
 
-- `GET /employees/` — список  
+- `GET /employees/` — список сотрудников  
 - `POST /employees/` — создать  
 - `GET /employees/<id>/` — получить  
 - `PUT /employees/<id>/` — обновить  
@@ -36,13 +38,11 @@
 
 ### Отправка QR-кода
 
-`POST /send-qr/` — отправка QR-кода на почту сотрудника  
+- `POST /send-qr/` — отправка QR-кода на email сотрудника  
 
-***Payload:***
+**Payload:**
+
 ```json
 {
   "email": "user@example.com"
 }
-```
-
-[← Назад к README](../README.md)
