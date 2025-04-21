@@ -3,7 +3,7 @@
 ## 1. Клонировать репозиторий
 
 ```bash
-git clone https://github.com/yourusername/test-task-django-rocketdata.git
+git clone https://github.com/KiselevDV/test_task_django_rocketdata.git
 cd test-task-django-rocketdata
 ```
 
